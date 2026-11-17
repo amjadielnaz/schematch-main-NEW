@@ -51,9 +51,11 @@ public class ColumnPairLabelMatcher {
 
         Set<String> grams = new HashSet<>();
 
-        for (int i = 0; i <= text.length() - q; i++) {
+        String padding = "#".repeat(q - 1);
+        String paddedText = padding + text + padding;
 
-            String gram = text.substring(i, i + q);
+        for (int i = 0; i <= paddedText.length() - q; i++) {
+            String gram = paddedText.substring(i, i + q);
 
             grams.add(gram);
         }

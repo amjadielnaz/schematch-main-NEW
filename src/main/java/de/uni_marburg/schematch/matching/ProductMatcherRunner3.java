@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
+import java.io.InputStream;
 
 import de.uni_marburg.schematch.data.Column;
 import de.uni_marburg.schematch.matchtask.columnpair.ColumnPair;
@@ -21,8 +22,7 @@ public class ProductMatcherRunner3 {
         // 1. 파일 설정
         // ==========================================
 
-        String folder =
-            "C:/Users/user/OneDrive/바탕 화면/product_top_100";
+        String folder = args.length > 1 ? args[1] : "examples/product-data";
 
         int maxFiles = 5;
         int maxRows = 200;
@@ -39,10 +39,11 @@ public class ProductMatcherRunner3 {
         try (Stream<Path> stream = Files.list(Path.of(folder))) {
 
             files = stream
-                .filter(p -> p.toString().endsWith(".json.gz"))
-                .sorted()
-                .limit(maxFiles)
-                .toList();
+                    .filter(p -> p.toString().endsWith(".json")
+                            || p.toString().endsWith(".json.gz"))
+                    .sorted()
+                    .limit(maxFiles)
+                    .toList();
         }
 
         System.out.println("Number of files: " + files.size());
@@ -140,11 +141,16 @@ public class ProductMatcherRunner3 {
         // 6. Inverted Index Blocking
         // ==========================================
 
-        ColumnPairBlocking blocking =
-            new ColumnPairBlocking();
+        String blockerName = args.length == 0 ? "label" : args[0];
 
-        Map<Integer, Set<Integer>> candidates =
-            blocking.generateCandidates(allColumns);
+        Map<Integer, Set<Integer>> candidates = switch (blockerName) {
+            case "label" -> new ColumnPairLabelBlocking().generateCandidates(allColumns);
+            case "values" -> new ColumnPairBlocking().generateCandidates(allColumns);
+            case "top-values" -> new ColumnPairTopValuesBlocking(5).generateCandidates(allColumns);
+            default -> throw new IllegalArgumentException("Unknown blocker: " + blockerName);
+        };
+
+        System.out.println("Blocker: " + blockerName);
 
 
         // ==========================================

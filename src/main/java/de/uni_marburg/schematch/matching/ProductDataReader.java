@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.InputStream;
 
 import java.util.zip.GZIPInputStream;
 
@@ -35,13 +36,11 @@ public class ProductDataReader {
                 new LinkedHashMap<>();
 
         
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(
-                    new GZIPInputStream(
-                        Files.newInputStream(Path.of(filePath))
-                    ),
-                    StandardCharsets.UTF_8
-                ))) {
+
+            try (InputStream input = Files.newInputStream(Path.of(filePath));
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(
+                         filePath.endsWith(".json.gz") ? new GZIPInputStream(input) : input,
+                         StandardCharsets.UTF_8))) {
 
             String line;
             int count = 0;
