@@ -147,6 +147,8 @@ public class ProductMatcherRunner3 {
             case "label" -> new ColumnPairLabelBlocking().generateCandidates(allColumns);
             case "values" -> new ColumnPairBlocking().generateCandidates(allColumns);
             case "top-values" -> new ColumnPairTopValuesBlocking(5).generateCandidates(allColumns);
+            case "entropy" -> new ColumnPairEntropyUniquenessBlocking().generateCandidates(allColumns);
+            case "minhash" -> new ColumnMinHashLSHBlocking().generateCandidates(allColumns);
             default -> throw new IllegalArgumentException("Unknown blocker: " + blockerName);
         };
 
