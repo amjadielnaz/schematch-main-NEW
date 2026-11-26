@@ -13,7 +13,7 @@ public class ColumnMinHashLSHBlocking {
 
     private static final int NUM_BANDS = 20;
 
-    private static final int ROWS_PER_BAND = 3;
+    private static final int ROWS_PER_BAND = 2;
 
     private static final long PRIME =
             2147483647L;
@@ -232,9 +232,7 @@ public class ColumnMinHashLSHBlocking {
                 31L * hash
                 + signature[start];
 
-        hash =
-                31L * hash
-                + signature[start + 1];
+
 
         return hash;
     }

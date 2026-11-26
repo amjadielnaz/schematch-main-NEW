@@ -24,7 +24,7 @@ public class ProductMatcherRunner3 {
 
         String folder = args.length > 1 ? args[1] : "examples/product-data";
 
-        int maxFiles = 5;
+        int maxFiles = 20;
         int maxRows = 200;
 
         double threshold = 0.5;
@@ -80,6 +80,7 @@ public class ProductMatcherRunner3 {
 
         int n = allColumns.size();
 
+
         List<ColumnPair> allPairs = new ArrayList<>();
 
         // 각 Pair에 대응하는 Column 인덱스 저장
@@ -92,6 +93,9 @@ public class ProductMatcherRunner3 {
 
                 Column c1 = allColumns.get(i);
                 Column c2 = allColumns.get(j);
+                if (c1.getTable() == c2.getTable()) {
+                    continue;
+                }
 
                 allPairs.add(new ColumnPair(c1, c2));
 
@@ -147,6 +151,8 @@ public class ProductMatcherRunner3 {
             case "label" -> new ColumnPairLabelBlocking().generateCandidates(allColumns);
             case "values" -> new ColumnPairBlocking().generateCandidates(allColumns);
             case "top-values" -> new ColumnPairTopValuesBlocking(5).generateCandidates(allColumns);
+            case "entropy" -> new ColumnPairEntropyUniquenessBlocking().generateCandidates(allColumns);
+            case "minhash" -> new ColumnMinHashLSHBlocking().generateCandidates(allColumns);
             default -> throw new IllegalArgumentException("Unknown blocker: " + blockerName);
         };
 
@@ -165,6 +171,11 @@ public class ProductMatcherRunner3 {
 
                 Column c1 = allColumns.get(i);
                 Column c2 = allColumns.get(j);
+
+                // Skip columns from the same table
+                if (c1.getTable() == c2.getTable()) {
+                    continue;
+                }
 
                 blockedPairs.add(new ColumnPair(c1, c2));
             }

@@ -81,6 +81,19 @@ public class ProductDataReader {
 
             columns.add(column);
         }
+        List<String> labels = new ArrayList<>();
+
+        for (Column column : columns) {
+            labels.add(column.getLabel());
+        }
+
+        new de.uni_marburg.schematch.data.Table(
+                Path.of(filePath).getFileName().toString(),
+                labels,
+                columns,
+                filePath,
+                null
+        );
 
         return columns;
     }
